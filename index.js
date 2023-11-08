@@ -29,13 +29,27 @@ async function run() {
     const categoryCollection=client.db('library-management-system').collection('booksCategory')
     const booksCollection=client.db('library-management-system').collection('books')
     
+    
+    
+    app.get('/allBooks',async(req,res)=>{
+      const cursor = booksCollection.find()
+      const result = await cursor.toArray()
+      res.send(result)
+    })
+    
     app.get('/books/:category_name',async(req,res)=>{
       const category_name=req.params.category_name;
       const query={category : category_name}
       const result=await booksCollection.find(query).toArray()
       res.send(result)
     })
-
+    app.get('/booksDetails/:id', async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) }
+      const result = await booksCollection.findOne(query)
+      res.send(result)
+    })
+   
     app.post('/books',async(req,res)=>{
       const booksInfo=req.body
       const result=await booksCollection.insertOne(booksInfo)
